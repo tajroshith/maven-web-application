@@ -21,7 +21,7 @@
 		<spring.version>5.1.2.RELEASE</spring.version>
 		<junit.version>4.11</junit.version>
 		<log4j.version>1.2.17</log4j.version>
-		<sonar.host.url>http://18.222.11.41:9025/</sonar.host.url>
+		<sonar.host.url>http://3.22.68.171:9025/</sonar.host.url>
                 <sonar.login>squ_1b658a7d865422cba9612569244304d6253e4f20</sonar.login>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -97,13 +97,13 @@
 	    <repository>
 	      <id>nexus</id>
 	      <name>HDFC Releases Nexus Repository</name>
-	      <url>http://18.117.134.130:9010/taj/repository/hdfc-release/</url>
+	      <url>http://18.217.7.114:9010/taj/repository/hdfc-release/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
 	      <id>nexus</id>
 	      <name>HDFC Snapshot Nexus Repository </name>
-	      <url>http://18.117.134.130:9010/taj/repository/hdfc-snapshot/</url>
+	      <url>http://18.217.7.114:9010/taj/repository/hdfc-snapshot/</url>
 	    </snapshotRepository>
 	    
 	</distributionManagement>
