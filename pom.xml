@@ -31,7 +31,7 @@
 	<repositories>
 		<repository>
 		<id>nexus</id>
-		<url>http://172.31.17.241:8081/taj/repository/hdfc-group/</url>
+		<url>http://172.31.17.241:8081/repository/hdfc-group/</url>
 		</repository>
 	</repositories>
 	
