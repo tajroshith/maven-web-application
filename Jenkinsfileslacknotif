@@ -28,7 +28,7 @@ sh "${mavenHome}/bin/mvn deploy"
 }
 
 stage('DeployAppIntoTomcatServer'){
-deploy adapters: [tomcat9(credentialsId: '56f7d90f-29fc-4cd2-aabd-5d44baa837ff', path: '', url: 'http://3.22.222.12:8080/')], contextPath: null, war: '**/maven-web-application.war'
+deploy adapters: [tomcat9(credentialsId: '5b404eee-159c-49fc-a421-07184d3f1874', path: '', url: 'http://3.22.222.12:8080/')], contextPath: null, war: '**/maven-web-application.war'
 }
 
 } // try closing
