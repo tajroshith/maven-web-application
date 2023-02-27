@@ -1,0 +1,72 @@
+node{ // node opening
+    
+echo "Job name is: ${env.JOB_NAME}"
+echo "Build number is: ${env.BUILD_NUMBER}"
+echo "Node name is: ${env.NODE_NAME}"
+echo "Jenkins Home dir is: ${JENKINS_HOME}"
+
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+def mavenHome = tool name: "maven3.9.0"
+
+try{ // try opening
+
+stage('CheckoutCode'){
+git branch: 'development', credentialsId: 'f6eaea33-1ab9-4a89-bbcf-b7d052f8d342', url: 'https://github.com/tajroshith/maven-web-application.git'
+}
+
+stage('Build'){
+sh "${mavenHome}/bin/mvn clean package"
+}
+
+stage('ExecuteSonarQube'){
+sh "${mavenHome}/bin/mvn sonar:sonar"
+}
+
+stage('UploadArtifactIntoNexus'){
+sh "${mavenHome}/bin/mvn deploy"
+}
+
+stage('DeployAppIntoTomcatServer'){
+deploy adapters: [tomcat9(credentialsId: '56f7d90f-29fc-4cd2-aabd-5d44baa837ff', path: '', url: 'http://3.22.222.12:8080/')], contextPath: null, war: '**/maven-web-application.war'
+}
+
+} // try closing
+
+catch(e){
+currentBuild.result = "FAILED"
+throw e
+} // catch closing
+
+finally{
+sendSlackNotifications(currentBuild.result)
+} // finally closing
+  
+} //node closing
+
+//Send Slack Notificatons
+
+def sendSlackNotifications(String buildStatus = 'STARTED') {
+  // build status of null means successful
+  buildStatus =  buildStatus ?: 'SUCCESS'
+
+  // Default values
+  def colorName = 'RED'
+  def colorCode = '#FF0000'
+  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+  def summary = "${subject} (${env.BUILD_URL})"
+
+  // Override default values based on build status
+  if (buildStatus == 'STARTED') {
+    colorName = 'YELLOW'
+    colorCode = '#FFFF00'
+  } else if (buildStatus == 'SUCCESS') {
+    colorName = 'GREEN'
+    colorCode = '#00FF00'
+  } else {
+    colorName = 'RED'
+    colorCode = '#FF0000'
+  }
+
+  // Send notifications
+  slackSend (color: colorCode, message: summary, channel: '#hdfcbank')
+}
