@@ -1,0 +1,10 @@
+version:  "3.8"
+services:
+  mavenwebapp:
+   image: zookl0/maven-web-application:VERSION
+   ports:
+   - 8080:8080
+   networks:
+   - mvnwebapp
+networks:
+  mvnwebapp:
