@@ -1,0 +1,53 @@
+node {
+
+//job properties - pipelinesyntax generator 
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '5', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+
+//Build Name and Description Setter Plugin
+buildName '${GIT_BRANCH}-${BUILD_NUMBER}'
+
+//variable declaring
+def mavenHome = tool name: "maven3.9.6"
+
+//stages
+
+stage('CheckOutCode'){
+git branch: 'development', credentialsId: 'b6dd501a-e6cf-4912-94fe-d846e1bd211a', url: 'https://github.com/tajroshith/maven-web-application.git'
+}
+
+/*
+stage('RemovingUnwantedfiles'){
+sh "rm -rf $JENKINS_HOME/workspace/$JOB_NAME/walmartpsc"
+sh "find $JENKINS_HOME/workspace/$JOB_NAME/ -type f -name 'Jenkins*' -delete"
+}
+*/
+
+stage('Build'){
+sh "${mavenHome}/bin/mvn clean package"
+}
+
+stage('ExecuteSonarReport'){
+sh "${mavenHome}/bin/mvn sonar:sonar"
+}
+
+stage('DeployPackagetoArtifactRepo'){
+sh "${mavenHome}/bin/mvn deploy"
+}
+
+stage('UploadApptoTomcatServer'){ //deploy war/ear syntax generator
+deploy adapters: [tomcat9(credentialsId: '6f4d85d4-ff41-4674-b344-7b6b4f496707', path: '', url: 'http://3.110.87.193:8080/')], contextPath: null, onFailure: false, war: '**/*maven-web-application.war'
+ }
+}
+
+/*
+Using SSH-Agent Plugin
+=======================
+stage('UploadApptoTomcatServer'){
+sshagent(['81f36b69-eb2c-4847-a75f-a76459ea082a']) {
+sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.41.45:/opt/apache-tomcat-9.0.85/webapps/"
+  }
+ }
+}
+Please note: In tomcat server webapps folder must be given full permission(chmod -R 777 webapps) otherwise we will receive
+permission denied error.
+*/
