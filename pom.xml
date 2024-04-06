@@ -21,8 +21,8 @@
 		<spring.version>5.1.2.RELEASE</spring.version>
 		<junit.version>4.11</junit.version>
 		<log4j.version>1.2.17</log4j.version>
-		<sonar.host.url>http://172.31.39.184:9000/</sonar.host.url>
-                <sonar.token>squ_ee85157f1f6559cc393a592a783ee7676ba3ac2d</sonar.token>
+		<sonar.host.url>http://172.31.41.111:9000/</sonar.host.url>
+                <sonar.token>squ_bbf477050697b645bea274d70e0e1ce940c3c719</sonar.token>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -31,7 +31,7 @@
 	<repositories>
 		<repository>
 		<id>nexus</id>
-		<url>http://172.31.12.241:8081/repository/hdfc-group/</url>
+		<url>http://172.31.34.53:8081/repository/hdfcbank-group/</url>
 		</repository>
 	</repositories>
 	
@@ -104,13 +104,13 @@
 	    <repository>
 	      <id>nexus</id>
 	      <name>HDFC Releases Nexus Repository</name>
-	      <url>http://172.31.12.241:8081/repository/hdfcbank-release/</url>
+	      <url>http://172.31.34.53:8081/repository/hdfcbank-release/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
 	      <id>nexus</id>
 	      <name>HDFC Snapshot Nexus Repository</name>
-	      <url>http://172.31.12.241:8081/repository/hdfcbank-snapshot/</url>
+	      <url>http://172.31.34.53:8081/repository/hdfcbank-snapshot/</url>
 	    </snapshotRepository>
 	    
 	</distributionManagement>
