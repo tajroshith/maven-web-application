@@ -1,0 +1,12 @@
+name: mwa
+
+services:
+   mavenwebapp:
+      image: zookl0/maven-web-app:VERSION
+      ports:
+      - 8080:8080
+      networks:
+      - springappbridge
+networks:
+   springappbridge:
+        driver: bridge
