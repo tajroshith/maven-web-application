@@ -2,7 +2,7 @@ name: mwa
 
 services:
    mavenwebapp:
-      image: 590183929966.dkr.ecr.ap-south-1.amazonaws.com/REPO:VERSION
+      image: 590183929966.dkr.ecr.ap-south-1.amazonaws.com/maven-web-application:VERSION
       ports:
       - 8080:8080
       networks:
