@@ -1,0 +1,9 @@
+FROM maven:3.8.7-openjdk-18-slim as build
+COPY . .
+RUN mvn clean package
+
+FROM tomcat:9.0.91-jre8-temurin-jammy
+RUN mv /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps/
+RUN sed -i '20 a\<!--' webapps/manager/META-INF/context.xml && sed -i '23 a\-->' webapps/manager/META-INF/context.xml && sed -i '20 a\<!--' webapps/host-manager/META-INF/context.xml && sed -i '23 a\-->' webapps/host-manager/META-INF/context.xml
+RUN sed -i '55 a\<user username="taj" password="1234" roles="manager-gui,admin-gui,manager-script"/>' conf/tomcat-users.xml
+COPY --from=build target/maven-web-application*.war  /usr/local/tomcat/webapps/maven-web-application.war
