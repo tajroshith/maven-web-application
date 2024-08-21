@@ -1,31 +1,39 @@
 node {
 
-echo "Job name is: ${env.JOB_NAME}"
-echo "Build number is: ${env.BUILD_NUMBER}"
-echo "Node name is: ${env.NODE_NAME}"
+def mavenHome = tool name: "maven3.9.8"
+def maven = "${mavenHome}/bin/mvn"
+currentBuild.displayName = "Dev-#${BUILD_NUMBER}"
+currentBuild.description = "For Dev Test"
+
+echo "Job name is: ${JOB_NAME}"
+echo "Build Number is: ${BUILD_NUMBER}"
+echo "Node Name is: ${NODE_NAME}"
 echo "Jenkins Home dir is: ${JENKINS_HOME}"
 
-properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '3')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([githubPush()])])
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '5', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: '']])
 
-def mavenHome = tool name: "maven3.9.0"
-stage('CheckoutCode'){
-git branch: 'development', credentialsId: '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', url: 'https://github.com/tajroshith/maven-web-application.git'
-}	
-
-stage('Build'){
-sh "${mavenHome}/bin/mvn clean package"
+timestamps {
+stage('CheckOutCode'){
+git branch: 'development', credentialsId: 'Github_Creds', url: 'https://github.com/tajroshith/maven-web-application.git'
 }
 
-stage('ExecutSonarQube'){
-sh "${mavenHome}/bin/mvn sonar:sonar"
+stage('BuildPkg'){
+sh "$maven clean package"
 }
 
-stage('UploadArtifactIntoNexus'){
-sh "${mavenHome}/bin/mvn deploy"
+stage('ExecuteSonarReport'){
+sh "$maven sonar:sonar"
 }
 
-stage('DeployAppIntoTomcat'){
-deploy adapters: [tomcat9(credentialsId: '5b404eee-159c-49fc-a421-07184d3f1874', path: '', url: 'http://3.16.214.2:8080/')], contextPath: '/taj', war: '**/maven-web-application.war'
+stage('DeployToRepo'){
+sh "$maven deploy"
 }
 
+stage('DeployAppToContainer'){
+    sshagent(['EC2-Creds']) {
+sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.15.161:/opt/tomcat/webapps/"
 }
+}
+
+   }
+ }
