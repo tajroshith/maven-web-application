@@ -5,6 +5,13 @@ services:
          - 8081:8080
          networks:
          - mvnappnet
+         healthcheck:
+           test: ["CMD", "curl", "-f", "http://localhost"]
+           interval: 1m30s
+           timeout: 10s
+           retries: 3
+           start_period: 40s
+           start_interval: 5s
 networks:
     mvnappnet:
         driver: bridge
