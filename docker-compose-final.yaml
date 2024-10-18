@@ -1,6 +1,6 @@
 services:
     mvn-web-app:
-         image: zookl0/maven-web-application:VERSION
+         image: 590183929966.dkr.ecr.ap-south-1.amazonaws.com/maven-web-application:VERSION
          ports:
          - 8081:8080
          networks:
